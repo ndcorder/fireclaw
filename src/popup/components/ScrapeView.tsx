@@ -57,7 +57,7 @@ export const ScrapeView = ({
       >
         {isScraping ? "Scraping\u2026" : "Scrape page"}
       </button>
-      <p style={styles.microcopy}>1 credit</p>
+      <p style={styles.microcopy}>1 credit &middot; {"\u2318"}Enter</p>
       {scrapeStage.tag === "error" ? <p style={styles.error}>{scrapeStage.message}</p> : null}
     </div>
     <div style={styles.sectionDivider} />

@@ -18,6 +18,7 @@ type Props = {
   crawlStatusSummary: string | undefined;
   crawlJobId: string | undefined;
   isPolling: boolean;
+  pagesCrawled: number;
   onCrawlStart: () => void;
   onUpdateForm: <F extends keyof CrawlFormState>(field: F, value: CrawlFormState[F]) => void;
 };
@@ -31,6 +32,7 @@ export const CrawlView = ({
   crawlStatusSummary,
   crawlJobId,
   isPolling,
+  pagesCrawled,
   onCrawlStart,
   onUpdateForm,
 }: Props) => (
@@ -46,6 +48,7 @@ export const CrawlView = ({
     >
       {isCrawling ? "Starting crawl\u2026" : "Start crawl"}
     </button>
+    <p style={styles.microcopy}>{"\u2318"}Enter</p>
     <div style={styles.formStack}>
       <label style={styles.fieldLabel}>
         <span>Prompt</span>
@@ -180,7 +183,19 @@ export const CrawlView = ({
     {crawlStatusSummary && crawlJobId ? (
       <div style={styles.crawlStatusRow}>
         <span style={getStatusDotStyle(crawlStatus?.ok ? crawlStatus.status : undefined)} />
-        <p style={styles.crawlText}>{crawlStatusSummary}</p>
+        <p style={styles.crawlText}>
+          {crawlStatusSummary}
+          {pagesCrawled > 0 && (
+            <span style={styles.pollingIndicator}>
+              {" \u00b7 "}
+              {pagesCrawled} {pagesCrawled === 1 ? "page" : "pages"} crawled
+              {crawlStatus?.ok &&
+                crawlStatus.payload?.total != null &&
+                crawlStatus.payload.total > 0 &&
+                ` / ${crawlStatus.payload.total} total`}
+            </span>
+          )}
+        </p>
         {isPolling && <span style={styles.pollingIndicator}>(auto-refresh)</span>}
       </div>
     ) : null}
