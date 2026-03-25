@@ -71,6 +71,8 @@ export type FirecrawlCrawlStartResponse = {
 export type FirecrawlCrawlStatus = {
   success: boolean;
   status?: "pending" | "processing" | "completed" | "failed";
+  total?: number;
+  completed?: number;
   data?: unknown;
   error?: string;
   message?: string;
