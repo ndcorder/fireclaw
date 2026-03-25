@@ -1,3 +1,3 @@
-export {}
+export {};
 
-console.info('[firecrawl-extension] background initialized')
+console.info("[firecrawl-extension] background initialized");
