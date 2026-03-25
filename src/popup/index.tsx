@@ -130,6 +130,32 @@ const Popup = () => {
 
   useEffect(() => () => dispose(), [dispose]);
 
+  // Keyboard shortcuts: Cmd/Ctrl+Enter to scrape/crawl, Escape to close panels
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Enter" && (event.metaKey || event.ctrlKey)) {
+        event.preventDefault();
+        if (currentView === "scrape") {
+          void handleScrape();
+        } else {
+          void handleCrawlStart();
+        }
+        return;
+      }
+      if (event.key === "Escape") {
+        if (apiEditorVisible && isApiConfigured) {
+          setApiEditorVisible(false);
+          setApiKeyDraft(apiKey);
+          clearNotice();
+        } else if (optionsOpen) {
+          toggleOptions();
+        }
+      }
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  });
+
   const normalizedPrefs = useMemo(
     () => ensurePreferences(prefs),
     [prefs?.formats, prefs?.onlyMainContent, prefs?.includeTags, prefs?.excludeTags],
@@ -476,11 +502,10 @@ const Popup = () => {
             apiKeyDraft={apiKeyDraft}
             isApiConfigured={isApiConfigured}
             onDraftChange={setApiKeyDraft}
-            onSave={() => {
+            onSave={(validatedKey) => {
               void (async () => {
-                const trimmed = apiKeyDraft.trim();
-                await setApiKey(trimmed);
-                setApiKeyDraft(trimmed);
+                await setApiKey(validatedKey);
+                setApiKeyDraft(validatedKey);
                 clearNotice();
                 setApiEditorVisible(false);
               })();
@@ -547,6 +572,7 @@ const Popup = () => {
           crawlStatusSummary={crawlStatusSummary}
           crawlJobId={crawlJobId}
           isPolling={isPolling}
+          pagesCrawled={crawlData.length}
           onCrawlStart={() => void handleCrawlStart()}
           onUpdateForm={updateCrawlForm}
         />
