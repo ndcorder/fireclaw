@@ -3,4 +3,5 @@ build/chrome-mv3-*/
 *.tsbuildinfo
 .DS_Store
 .env
+keys.json
 .plasmo
